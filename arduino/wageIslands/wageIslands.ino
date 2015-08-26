@@ -1,5 +1,3 @@
-
-
 // FOR USE ON ARDUINO UNO R3
 
 /* Connections
@@ -9,8 +7,6 @@
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h> // from https://bitbucket.org/fmalpartida/new-liquidcrystal/wiki/Home
-
-//bool debug = true;      // Turn Debug mode on  (not currently used)
 
 // LEVELS
 #define levelCount 19 // Total number of levelCount that will be moving between
@@ -55,16 +51,6 @@ const unsigned int timer_speed = (unsigned int) ((1.f / ((float) spinSpeed * (fl
 // STATES
 int buttonState = 0;
 int dir = 0;
-
-//float percent = 0.0;
-
-// automated version variables
-//boolean autoState = false;
-//int autoPin = 3;                // Pin to connect auto run switch to
-//int autoVal = 1;
-
-int upState = true;             // Set run direction
-// print out dir and confirm which is which
 
 void setup()
 {
@@ -122,9 +108,6 @@ void setup()
   lcd.setBacklight(HIGH);                        // Turn Backlight on
 
   Serial.begin(9600);                            // Start Serial
-
-  // automatic state setup()
-  //  pinMode(autoPin, INPUT_PULLUP);                  // Set internal pullup on auto run pin
 }
 
 //Display data to LCD
@@ -157,16 +140,7 @@ void displayData() {
 
 
 void loop() {
-  //  autoVal = digitalRead(autoPin); //check to see if it's in autorun mode
-  //  if (autoVal > 0) {
-  //    autoState = false;  // turn autorun off if the switch isn't on
-  //  } else {
-  //    autoState = true;  // Turn autorun on if the switch is on
-  //  }
-
-  //  targetStep = floor(percent*maxStep);    // Get total steps per level
   targetStep = floor(maxStep);    // Get total steps per level
-
   level = levelCount * currentStep / targetStep;// Math for level height
 
   //Printing to serial for debug purpuses
@@ -186,22 +160,7 @@ void loop() {
     interrupts();
     delay(stepDelay);
   } else {
-
-    // Auto mode movement
-    //    if (autoState) {
-    //      if (currentStep <= 0 || currentStep >= targetStep) {
-    //        upState = !upState;
-    //      }
-    //      if (upState) {
-    //        buttonState = 1;
-    //      } else {
-    //        buttonState = 0;
-    //      }
-    //
-    //      // Manual (button) mode movement
-    //    } else {
     buttonState = digitalRead(buttonPin); //Check state of button
-    //    }
 
     dir = (2 * buttonState) - 1;
     displayData();
@@ -215,17 +174,14 @@ void loop() {
       interrupts();
 
       currentStep = constrain(currentStep + dir, 0, targetStep);
-      //      if (debug) {
-      //        lcd.setCursor(0, 3);
-      //        lcd.print("      ");
-      //        lcd.print("  ");
-      //      }
+
     } else {
       noInterrupts();
       TCCR1A &= ~(1 << COM1A0);  // Disable OCR1A pin
       interrupts();
     }
   }
+
   previous_level = level;
 }
 
