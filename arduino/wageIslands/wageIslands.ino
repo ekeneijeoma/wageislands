@@ -3,8 +3,7 @@
 // FOR USE ON ARDUINO UNO R3
 
 /* Connections
- *  D7 to pushbutton with a pulldown resistor, this controls the movement of the motors
- *  A0 to potentiometer, this constrains the maximum travel length
+ *  D7 to pushbutton with a pulldown resistor, this controls the movement of the motors 
  *  A4 to SDA, A5 to SDL of an I2C LCD
  */
 
@@ -25,8 +24,7 @@ int stepDelay = 1000; // milliseconds to stop each time
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7); // SDA to A4, SDL to A5
 #define BACKLIGHT_PIN     3                       // LCD Backlight pin (on LCD, do no change)
 
-// PINS
-const int sensorPin = A0; // select the input pin for the potentiometer
+// PINS 
 const int buttonPin = 7;  // Button Pin - Connect between this and +5V, Pull down resistor between this and GND.
 
 const int MS1pin = 12;    // 00 is 1, 10 is 1/2
@@ -167,8 +165,8 @@ void loop() {
     autoState = true;  // Turn autorun on if the switch is on
   }
 
-  percent = analogRead(sensorPin) / 1024.;  // read input from potentiometer as a percent
-  targetStep = floor(percent * maxStep);    // Get total steps per layer
+  targetStep = floor(maxStep);    // Get total steps per layer
+
   layer = LAYERS * currentStep / targetStep;// Math for layer height
 
   //Printing to serial for debug purpuses
@@ -204,10 +202,10 @@ void loop() {
     } else {
       buttonState = digitalRead(buttonPin); //Check state of button
     }
-    
+
     dir = (2 * buttonState) - 1;
     displayData();
-    
+
     if ( (dir > 0 && currentStep < targetStep) ||
          (dir < 0 && currentStep > 0 ) ) {
       digitalWrite(DIRpin, buttonState);
